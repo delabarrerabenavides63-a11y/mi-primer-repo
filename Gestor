@@ -36,8 +36,12 @@ public class Gestor {
 
     }
 
-    public void rankingTorneo(String nombreTorneo){
-        
+    public List<Jugador> rankingTorneo(String nombreTorneo){
+        if(torneos.containsKey(nombre torneo){
+List<Jugador> jugadoresTorneo= new ArrayList<>(torneos.get(nombre torneo));
+Collections.sort(jugadoresTorneo);
+return jugadoresTorneo;
     }
+  }
 }
 
