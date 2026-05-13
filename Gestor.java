@@ -2,10 +2,12 @@ import java.util.*;
 public class Gestor {
     protected Map<String,Jugador> jugadores;
     protected Map<String,List<Jugador>> torneos;
+    protected List<Partida> partidas;
 
     public Gestor(){
         this.jugadores=new HashMap<>();
         this.torneos=new HashMap<>();
+        this.partidas= new ArrayList<>();
     }
 
     public void nuevoJugador(Jugador nuevo){
@@ -72,7 +74,32 @@ public class Gestor {
         }
     }
     return torneosDeJugador;
-}
+    }
 
+    public void registrarPartida(Jugador j1,Jugador j2,String aliasGanador){
+        partidas.add(new Partida(j1, j2, aliasGanador));
+        if(j1.equals(aliasGanador)){
+            j1.puntuacion+=3;
+        }else if(j2.equals(aliasGanador)){
+            j2.puntuacion+=3;
+        }else{
+            System.out.println("Alias ganador no correspondiente a los jugadores");
+        }
+    }
+
+    public int partidasGanadasJugador(String alias){
+        int partidasGanadas=0;
+        for (Partida partida : partidas) {
+            if(partida.aliasGanador.equals(alias)){
+                partidasGanadas++;
+            }
+        }
+        return partidasGanadas;
+    }
+
+    public Jugador mejorJugador(){
+        Jugador mejorJugador=Collections.max(rankingGlobal());
+        return mejorJugador;
+    }
 }
 
