@@ -18,7 +18,12 @@ public class Jugador implements Comparable<Jugador>{
         return otro.puntuacion.compareTo(this.puntuacion);
     }
 
+    @Override
+    public String toString() {
+        return "Jugador [nombre=" + nombre + ", alias=" + alias + ", puntuacion=" + puntuacion + "]";
+    }
 
+    
 
     
 }

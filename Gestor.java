@@ -28,9 +28,13 @@ public class Gestor {
     }
 
     public void inscribirJugador(String nombreTorneo,String alias){
-        torneos.get(nombreTorneo).add(jugadores.get(alias));
-
-    }
+        if(torneos.containsKey(nombreTorneo)){
+            torneos.get(nombreTorneo).add(jugadores.get(alias));
+        }else{
+            System.out.println("Torneo no existente");
+            }
+        }
+    
     
     public List<Jugador> rankingTorneo(String nombreTorneo){
         if(torneos.containsKey(nombreTorneo)){
@@ -76,29 +80,42 @@ public class Gestor {
     return torneosDeJugador;
     }
 
-    public void registrarPartida(Jugador j1,Jugador j2,String aliasGanador){
+    public void registrarPartida(String aliasJ1 ,String aliasJ2,String aliasGanador){
+        if(!jugadores.containsKey(aliasJ1) || !jugadores.containsKey(aliasJ2)){
+            System.out.println("Alguno de los dos jugadores no existe");
+        }else{
+            Jugador j1= jugadores.get(aliasJ1);
+            Jugador j2= jugadores.get(aliasJ2);
         partidas.add(new Partida(j1, j2, aliasGanador));
-        if(j1.equals(aliasGanador)){
+        if(j1.alias.equals(aliasGanador)){
             j1.puntuacion+=3;
-        }else if(j2.equals(aliasGanador)){
+        }else if(j2.alias.equals(aliasGanador)){
             j2.puntuacion+=3;
         }else{
             System.out.println("Alias ganador no correspondiente a los jugadores");
         }
     }
+    }
 
     public int partidasGanadasJugador(String alias){
         int partidasGanadas=0;
-        for (Partida partida : partidas) {
+        /*for (Partida partida : partidas) {
             if(partida.aliasGanador.equals(alias)){
                 partidasGanadas++;
             }
+        }*/
+        if(jugadores.containsKey(alias)){
+            partidasGanadas=jugadores.get(alias).puntuacion/3;
+            return partidasGanadas;
+        }else{
+            return 0;
         }
-        return partidasGanadas;
+        
     }
 
     public Jugador mejorJugador(){
-        Jugador mejorJugador=Collections.max(rankingGlobal());
+        List<Jugador> rankingLista=new ArrayList<>(rankingGlobal());
+        Jugador mejorJugador=Collections.max(rankingLista);
         return mejorJugador;
     }
 }
