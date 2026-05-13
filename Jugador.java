@@ -2,7 +2,7 @@
 
 import java.util.Comparator;
 
-public class Jugador implements Comparator<Jugador>{
+public class Jugador implements Comparable<Jugador>{
     protected String nombre;
     protected String alias;
     protected Integer puntuacion;
@@ -14,8 +14,8 @@ public class Jugador implements Comparator<Jugador>{
     }
 
     @Override
-    public int compare(Jugador j1, Jugador j2) {
-        return j1.puntuacion.compareTo(j2.puntuacion);
+    public int compareTo(Jugador otro) {
+        return otro.puntuacion.compareTo(this.puntuacion);
     }
 
 
