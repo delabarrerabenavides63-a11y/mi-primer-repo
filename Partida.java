@@ -9,6 +9,10 @@ public class Partida {
         this.aliasGanador=aliasGanador;
     }
 
+    public Partida(String aliasJ1, String aliasJ2, String aliasGanador) {
+        //TODO Auto-generated constructor stub
+    }
+
     @Override
     public String toString() {
         return "Partida [(jugador1=" + jugador1.alias + ", jugador2=" + jugador2.alias + ")GANADOR: "+aliasGanador+"]";

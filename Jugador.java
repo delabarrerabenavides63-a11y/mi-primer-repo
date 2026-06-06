@@ -7,11 +7,42 @@ public class Jugador implements Comparable<Jugador>{
     protected String alias;
     protected Integer puntuacion;
     
-    public Jugador(String nombre, String alias) {
+    public Jugador(String nombre, String alias, Integer puntuacion) {
         this.nombre = nombre;
         this.alias = alias;
-        this.puntuacion=0;
+        this.puntuacion=puntuacion;
     }
+
+    
+    public String getNombre() {
+        return nombre;
+    }
+
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+
+    public String getAlias() {
+        return alias;
+    }
+
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+
+    public Integer getPuntuacion() {
+        return puntuacion;
+    }
+
+
+    public void setPuntuacion(Integer puntuacion) {
+        this.puntuacion = puntuacion;
+    }
+
 
     @Override
     public int compareTo(Jugador otro) {

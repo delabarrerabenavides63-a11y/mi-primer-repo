@@ -9,36 +9,41 @@ public class Gestor {
         this.torneos=new HashMap<>();
         this.partidas= new ArrayList<>();
     }
-
-    public void nuevoJugador(Jugador nuevo){
-        if(!jugadores.containsKey(nuevo.alias)){
-            jugadores.put(nuevo.alias,nuevo);
-        }else{
-            System.out.println("Jugador ya existente");
-        }
-    }
-
-    public void nuevoTorneo(String nombreTorneo){
-        if(!torneos.containsKey(nombreTorneo)){
-            List <Jugador> participantes= new ArrayList<>();
-            torneos.put(nombreTorneo,participantes);
-        }else{
-            System.out.println("Torneo ya existente");
-        }
-    }
-
-    public void inscribirJugador(String nombreTorneo,String alias){
-        if(torneos.containsKey(nombreTorneo)){
-            torneos.get(nombreTorneo).add(jugadores.get(alias));
-        }else{
-            System.out.println("Torneo no existente");
-            }
-        }
     
+    public void nuevoJugador(Jugador nuevo) {
+        if (JugadorDAO.obtenerPorAlias(nuevo.alias) == null) {
+            JugadorDAO.insertar(nuevo);
+            System.out.println("Jugador creado.");
+        } else {
+            System.out.println("Jugador ya existe.");
+        }
+    }
+    
+    public void nuevoTorneo(String nombreTorneo) {
+        if (!TorneoDAO.existe(nombreTorneo)) {
+            TorneoDAO.insertar(nombreTorneo);
+            System.out.println("Torneo creado.");
+        } else {
+            System.out.println("Torneo ya existe.");
+        }
+    }
+    
+    public void inscribirJugador(String nombreTorneo, String alias) {
+        if (!TorneoDAO.existe(nombreTorneo)) {
+            System.out.println("Torneo no existe.");
+            return;
+        }
+        if (JugadorDAO.obtenerPorAlias(alias) == null) {
+            System.out.println("Jugador no existe.");
+            return;
+        }
+        ParticipacionDAO.inscribir(nombreTorneo, alias);
+        System.out.println("Jugador inscrito.");
+    }
     
     public List<Jugador> rankingTorneo(String nombreTorneo){
-        if(torneos.containsKey(nombreTorneo)){
-    List<Jugador> jugadoresTorneo= new ArrayList<>(torneos.get(nombreTorneo));
+        if(TorneoDAO.existe(nombreTorneo)){
+    List<Jugador> jugadoresTorneo= new ArrayList<>(ParticipacionDAO.obtenerJugadoresDeTorneo(nombreTorneo));
     Collections.sort(jugadoresTorneo);
     return jugadoresTorneo;
     }else{
@@ -47,70 +52,37 @@ public class Gestor {
     }
 
     public Set<Jugador> rankingGlobal (){
-        Set <Jugador> todosJugadores= new TreeSet<>();
-        for (List<Jugador> lista : torneos.values()) {
-            todosJugadores.addAll(lista);
-        }
+        Set <Jugador> todosJugadores= new TreeSet<>(JugadorDAO.obtenerTodos());
         return todosJugadores;
     }
 
     public void eliminarJugadorTorneo(String torneo, String aliasJugador) {
-    if (torneos.containsKey(torneo)) {
-        Iterator<Jugador> it = torneos.get(torneo).iterator();
-        while (it.hasNext()) {
-            Jugador j = it.next();
-            if (j.alias.equals(aliasJugador)) {
-                it.remove();
-                break;
-            }
-        }
-        }
+    if(!TorneoDAO.existe(torneo)){
+        System.out.println("torneo no existente");
+        return;
+    }
+    if(JugadorDAO.obtenerPorAlias(aliasJugador)==null){
+        System.out.println("Jugador no existente");
+        return;
+    }
+    ParticipacionDAO.eliminar(torneo, aliasJugador);
     }
     
 
     public List<String> torneoJugador(String aliasJugador) {
-    List<String> torneosDeJugador = new ArrayList<>();
-    for (Map.Entry<String, List<Jugador>> entrada : torneos.entrySet()) {
-        for (Jugador j : entrada.getValue()) {
-            if (j.alias.equals(aliasJugador)) {
-                torneosDeJugador.add(entrada.getKey());
-            }
-        }
-    }
-    return torneosDeJugador;
+    return ParticipacionDAO.obtenerTorneosDeJugador(aliasJugador);
     }
 
     public void registrarPartida(String aliasJ1 ,String aliasJ2,String aliasGanador){
-        if(!jugadores.containsKey(aliasJ1) || !jugadores.containsKey(aliasJ2)){
+        if(JugadorDAO.obtenerPorAlias(aliasJ1)==null || JugadorDAO.obtenerPorAlias(aliasJ2)==null){
             System.out.println("Alguno de los dos jugadores no existe");
         }else{
-            Jugador j1= jugadores.get(aliasJ1);
-            Jugador j2= jugadores.get(aliasJ2);
-        partidas.add(new Partida(j1, j2, aliasGanador));
-        if(j1.alias.equals(aliasGanador)){
-            j1.puntuacion+=3;
-        }else if(j2.alias.equals(aliasGanador)){
-            j2.puntuacion+=3;
-        }else{
-            System.out.println("Alias ganador no correspondiente a los jugadores");
+            PartidaDAO.insertar(aliasJ1, aliasJ2, aliasGanador);
         }
-    }
     }
 
     public int partidasGanadasJugador(String alias){
-        int partidasGanadas=0;
-        /*for (Partida partida : partidas) {
-            if(partida.aliasGanador.equals(alias)){
-                partidasGanadas++;
-            }
-        }*/
-        if(jugadores.containsKey(alias)){
-            partidasGanadas=jugadores.get(alias).puntuacion/3;
-            return partidasGanadas;
-        }else{
-            return 0;
-        }
-        
+        return PartidaDAO.contarGanadas(alias);
     }
 
     public Jugador mejorJugador(){
